@@ -49,7 +49,7 @@ endif()
 find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 
 add_library(fiu ${FIU_LIB_TYPE}
-  # TODO
+  src/FiuClient.cpp
 )
 add_library(bci::fiu ALIAS fiu)
 
@@ -95,7 +95,6 @@ target_include_directories(fiu PUBLIC
 )
 
 target_link_libraries(fiu PRIVATE
-  fmt::fmt-header-only
   ${BOOST_LIBS}
 )
 
