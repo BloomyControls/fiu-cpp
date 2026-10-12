@@ -223,3 +223,10 @@ int FiuClient_GetInterlockState(FiuClientHandle handle,
                                         bool* interlock_out) {
   return WrapGet(&fc::GetInterlockState, handle, interlock_out);
 }
+
+// check for programmer errors in enum values
+static_assert(FIU_CHAN_STATE_DISCONNECTED == (int)ChannelState::kDisconnected);
+static_assert(FIU_CHAN_STATE_CONNECTED == (int)ChannelState::kConnected);
+static_assert(FIU_CHAN_STATE_VMEAS == (int)ChannelState::kVoltageMeasurement);
+static_assert(FIU_CHAN_STATE_IMEAS == (int)ChannelState::kCurrentMeasurement);
+static_assert(FIU_CHAN_STATE_FAULT == (int)ChannelState::kGroundFault);
