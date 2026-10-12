@@ -133,7 +133,7 @@ if(FIU_INSTALL AND BUILD_SHARED_LIBS)
     COMPATIBILITY AnyNewerVersion)
 
   configure_package_config_file(
-    ${PROJECT_SOURCE_DIR}/cmake/fiu-config.cmake.in
+    ${PROJECT_SOURCE_DIR}/cmake/fiu-cpp-config.cmake.in
     ${project_config}
     INSTALL_DESTINATION ${fiu_cmake_dir})
 
