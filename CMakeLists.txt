@@ -49,6 +49,7 @@ endif()
 find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 
 add_library(fiu ${FIU_LIB_TYPE}
+  src/CInterface.cpp
   src/Errors.cpp
   src/FiuClient.cpp
   src/SerialPort.cpp
@@ -78,11 +79,14 @@ target_compile_definitions(fiu PRIVATE
 )
 
 if(MSVC)
-  target_compile_options(fiu PRIVATE /W3)
+  # disable C5030, unknown attributes
+  target_compile_options(fiu PRIVATE /Zc:__cplusplus /W3 /wd5030)
 else()
   target_compile_options(fiu PRIVATE -Wall -Wextra)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(fiu PRIVATE -Wno-psabi)
+    target_compile_options(fiu PRIVATE -Wno-psabi -Wno-attributes=msvc::)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(fiu PRIVATE -Wno-unknown-attributes)
   endif()
 endif()
 
