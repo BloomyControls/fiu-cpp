@@ -34,6 +34,17 @@ constexpr std::optional<T> ParseInt(std::string_view str, int base = 10) {
   return v;
 }
 
+constexpr ErrorCode TranslateDeviceError(std::string_view dev_err) {
+  using std::operator""sv;
+  if (dev_err == "SYSTEM_INTERLOCKED"sv) {
+    return ErrorCode::kSystemInterlocked;
+  }
+  if (dev_err == "RESOURCE_CONFLICT"sv) {
+    return ErrorCode::kResourceConflict;
+  }
+  return ErrorCode::kUnknownDeviceError;
+}
+
 }  // namespace bci::fiu::util
 
 #endif  /* FIU_CPP_SRC_UTIL_H */

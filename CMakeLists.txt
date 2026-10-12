@@ -50,6 +50,7 @@ find_package(Doxygen 1.9.8 OPTIONAL_COMPONENTS dot)
 
 add_library(fiu ${FIU_LIB_TYPE}
   src/FiuClient.cpp
+  src/SerialPort.cpp
 )
 add_library(bci::fiu ALIAS fiu)
 

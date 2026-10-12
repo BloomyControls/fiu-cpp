@@ -8,11 +8,12 @@
 #include <bci/fiu/CommonTypes.h>
 #include <bci/fiu/FiuClient.h>
 
-#include <charconv>
+#include <cassert>
 #include <cstdint>
 #include <string_view>
 
 #include "Message.h"
+#include "SerialPort.h"
 #include "Util.h"
 
 namespace bci::fiu {
@@ -22,15 +23,26 @@ using util::Err;
 
 unsigned int FiuClient::Version() noexcept { return FIU_VERSION; }
 
-#if 0
-FiuClient::FiuClient() = default;
+FiuClient::FiuClient() : box_id_{}, port_{std::make_unique<SerialPort>()} { }
 
 FiuClient::FiuClient(FiuClient&& other) noexcept = default;
 
 FiuClient& FiuClient::operator=(FiuClient&& rhs) noexcept = default;
 
 FiuClient::~FiuClient() = default;
-#endif
+
+ErrorCode FiuClient::Open(const std::string& port) {
+  if (!port_) {
+    return ec::kInvalidObject;
+  }
+  return port_->Open(port);
+}
+
+void FiuClient::Close() noexcept {
+  if (port_) {
+    port_->Close();
+  }
+}
 
 ErrorCode FiuClient::SetBoxID(std::uint8_t box_id) noexcept {
   if (box_id > 7) {
@@ -187,8 +199,68 @@ Result<bool> FiuClient::GetInterlockState() const {
   }
 }
 
-ErrorCode FiuClient::SendAndCheck(std::string_view buf) const {}
+Result<std::string> FiuClient::SendAndRecv(std::string_view buf) const {
+  if (!port_) {
+    return Err(ec::kInvalidObject);
+  }
 
-Result<std::string> FiuClient::SendAndRecv(std::string_view buf) const {}
+  ec e = port_->Write(buf);
+  if (e != ec::kSuccess) {
+    return Err(e);
+  }
+
+  // XXX is 100ms okay?
+  auto resp = port_->ReadLine(100U);
+  if (!resp) {
+    return resp;
+  }
+
+  if (resp->size() < 3) {
+    return Err(ec::kInvalidResponse);
+  }
+
+  std::string_view rv{*resp};
+  auto crc_in = util::ParseInt<std::uint8_t>(rv.substr(rv.size() - 2), 16);
+  if (!crc_in) {
+    return Err(ec::kInvalidResponse);
+  }
+
+  rv.remove_suffix(2);
+  std::uint8_t sum{};
+  for (auto c : rv) {
+    sum += static_cast<std::uint8_t>(c);
+  }
+
+  if (sum != crc_in) {
+    return Err(ec::kChecksumMismatch);
+  }
+
+  const int status = static_cast<int>(rv.front() - '0');
+  if (status < 0 || status > 3) {
+    return Err(ec::kInvalidResponse);
+  }
+
+  rv.remove_prefix(1);
+
+  if (status == 2) {
+    return Err(ec::kSyntaxError);
+  }
+
+  if (status == 3) {
+    return Err(util::TranslateDeviceError(rv));
+  }
+
+  // move here so that in C++23 and beyond, we can benefit from a potentially
+  // more efficient std::string::substr()&& (https://wg21.link/P2438R2)
+  return std::move(resp).value().substr(1, resp->size() - 3);
+}
+
+ErrorCode FiuClient::SendAndCheck(std::string_view buf) const {
+  auto res = SendAndRecv(buf);
+  if (!res) {
+    return res.error();
+  }
+  return ec::kSuccess;
+}
 
 }  // namespace bci::fiu

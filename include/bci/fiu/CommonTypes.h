@@ -7,7 +7,7 @@
 
 /**
  * @file
- * @brief Common types for FIU communications.
+ * @brief Defines common types for used with FIU client.
  */
 #ifndef FIU_CPP_INCLUDE_BCI_FIU_COMMONTYPES_H
 #define FIU_CPP_INCLUDE_BCI_FIU_COMMONTYPES_H
@@ -29,12 +29,29 @@ enum class ChannelState : std::uint8_t {
   kGroundFault = 4,
 };
 
+/// Error codes returned by the driver. Values must match the C macros!
 enum class ErrorCode : int {
-  kSuccess = 0,
-  kBoxIDOutOfRange = -1,
-  kChannelIndexOutOfRange = -2,
-  kInvalidArgument = -3,
-  kInvalidResponse = -4,
+  kSuccess = 0,                  ///< Success (no error)
+  kBoxIDOutOfRange = -1,         ///< Box ID out of range
+  kChannelIndexOutOfRange = -2,  ///< Channel index out of range
+  kInvalidArgument = -3,         ///< Invalid argument
+  kInvalidResponse = -4,         ///< Invalid response received from FIU
+  kAlreadyConnected = -5,        ///< Already connected
+  kFailedToOpenPort = -6,        ///< Failed to open serial port
+  kFailedToConfigurePort = -7,   ///< Failed to configure serial port
+  kNotConnected = -8,            ///< Not connected
+  kSendFailed = -9,              ///< Failed to send data through serial port
+  kReadTimedOut = -10,           ///< Read timed out
+  kReadFailed = -11,             ///< Read failed (serial port error)
+  kChecksumMismatch = -12,       ///< Checksum mismatch on received message
+  kSyntaxError = -13,            ///< Syntax error (from device)
+  kSystemInterlocked = -14,      ///< System interlocked (from device)
+  kResourceConflict = -15,       ///< Resource conflict (from device)
+  kUnknownDeviceError = -16,     ///< Unknown error (from device)
+  kInvalidObject = -17,          ///< Invalid client object
+  kBufferTooSmall = -18,         ///< Buffer too small
+  kAllocationFailed = -19,       ///< Allocation failed (C only)
+  kUnexpectedException = -20,    ///< Unexpected exception (C only)
 };
 
 struct FirmwareVersion {

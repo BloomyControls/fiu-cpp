@@ -14,6 +14,7 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <string_view>
 
@@ -32,6 +33,8 @@
 
 namespace bci::fiu {
 
+class SerialPort;
+
 /**
  * @brief Serial client for communicating with the Bloomy Controls Fault
  * Insertion Unit (FIU).
@@ -47,10 +50,10 @@ class FiuClient {
   FIU_API static unsigned int Version() noexcept;
 
   /// Default constructor.
-  FIU_API FiuClient() = default;
+  FIU_API FiuClient();
 
   /// Move constructor.
-  FIU_API FiuClient(FiuClient&& other) noexcept = default;
+  FIU_API FiuClient(FiuClient&& other) noexcept;
 
   /**
    * @brief Move assignment operator.
@@ -59,13 +62,22 @@ class FiuClient {
    *
    * @return Reference to self.
    */
-  FIU_API FiuClient& operator=(FiuClient&& rhs) noexcept = default;
-
-  FiuClient(const FiuClient&) = delete;
-  FiuClient& operator=(const FiuClient&) = delete;
+  FIU_API FiuClient& operator=(FiuClient&& rhs) noexcept;
 
   /// Destructor.
-  FIU_API ~FiuClient() = default;
+  FIU_API ~FiuClient();
+
+  /**
+   * @brief Open a serial port to connect to the FIU.
+   *
+   * @param[in] port serial port to open (e.g., COM4)
+   *
+   * @return An error code.
+   */
+  FIU_API ErrorCode Open(const std::string& port);
+
+  /// Close the serial port.
+  FIU_API void Close() noexcept;
 
   /**
    * @brief Set the target box ID. This can be done at runtime to quickly target
@@ -141,16 +153,8 @@ class FiuClient {
  private:
   /// FIU box ID.
   std::uint8_t box_id_;
-
-  /**
-   * @brief Send a message to the FIU and wait for a response. This function
-   * should be used for commands which return 0, 2, or 3.
-   *
-   * @param[in] buf message to send
-   *
-   * @return An error code.
-   */
-  FIU_API ErrorCode SendAndCheck(std::string_view buf) const;
+  /// Serial port.
+  std::unique_ptr<SerialPort> port_;
 
   /**
    * @brief Send a message to the FIU and wait for a response. This function
@@ -161,6 +165,16 @@ class FiuClient {
    * @return Result containing the response or an error code.
    */
   FIU_API Result<std::string> SendAndRecv(std::string_view buf) const;
+
+  /**
+   * @brief Send a message to the FIU and wait for a response. This function
+   * should be used for commands which return 0, 2, or 3.
+   *
+   * @param[in] buf message to send
+   *
+   * @return An error code.
+   */
+  FIU_API ErrorCode SendAndCheck(std::string_view buf) const;
 };
 
 }  // namespace bci::fiu
