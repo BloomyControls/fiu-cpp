@@ -27,7 +27,8 @@ template <class T>
 requires std::integral<T>
 constexpr std::optional<T> ParseInt(std::string_view str, int base = 10) {
   T v{};
-  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), v);
+  auto [ptr, ec] = std::from_chars(str.data(), str.data() + str.size(), v,
+                                   base);
   if (ec != std::errc{}) {
     return std::nullopt;
   }
