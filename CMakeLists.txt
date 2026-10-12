@@ -185,8 +185,8 @@ if(FIU_INSTALL AND BUILD_SHARED_LIBS)
 
   cpack_add_component(Metadata HIDDEN)
   cpack_add_component(libs REQUIRED
-    DISPLAY_NAME "BS120x driver"
-    DESCRIPTION "C/C++ BS120x driver library")
+    DISPLAY_NAME "FIU serial library"
+    DESCRIPTION "C/C++ FIU serial library")
   cpack_add_component(devel
     DISPLAY_NAME "Development files"
     DESCRIPTION "Headers and CMake support files for developing software using the libraries")
