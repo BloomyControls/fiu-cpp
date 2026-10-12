@@ -83,7 +83,7 @@ class FiuClient {
    * @brief Set the target box ID. This can be done at runtime to quickly target
    * another device.
    *
-   * @param[in] box_id new target box ID, 0-15
+   * @param[in] box_id new target box ID, 0-6
    *
    * @return An error code.
    */
