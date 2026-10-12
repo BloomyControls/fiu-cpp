@@ -22,16 +22,19 @@ namespace bci::fiu {
 /// FIU channel count.
 inline constexpr unsigned int kChannelCount{24U};
 
+/// FIU channel states.
 enum class ChannelState : std::uint8_t {
-  kDisconnected = 0,
-  kConnected = 1,
-  kVoltageMeasurement = 2,
-  kCurrentMeasurement = 3,
-  kGroundFault = 4,
+  // Values must match the C macros!
+  kDisconnected = 0,        ///< Disconnected
+  kConnected = 1,           ///< Connected
+  kVoltageMeasurement = 2,  ///< Voltage measurement mode
+  kCurrentMeasurement = 3,  ///< Current measurement mode
+  kGroundFault = 4,         ///< Ground fault mode
 };
 
-/// Error codes returned by the driver. Values must match the C macros!
+/// Error codes returned by the driver.
 enum class ErrorCode : int {
+  // Values must match the C macros!
   kSuccess = 0,                  ///< Success (no error)
   kBoxIDOutOfRange = -1,         ///< Box ID out of range
   kChannelIndexOutOfRange = -2,  ///< Channel index out of range
@@ -55,9 +58,10 @@ enum class ErrorCode : int {
   kUnexpectedException = -20,    ///< Unexpected exception (C only)
 };
 
+/// FIU firmware version.
 struct FirmwareVersion {
-  uint8_t major;
-  uint8_t minor;
+  uint8_t major;  ///< Major version
+  uint8_t minor;  ///< Minor version
 };
 
 /**
@@ -83,4 +87,4 @@ FIU_API const char* ErrorMessage(ErrorCode ec) noexcept;
 
 }  // namespace bci::fiu
 
-#endif  /* FIU_CPP_INCLUDE_BCI_FIU_COMMONTYPES_H */
+#endif /* FIU_CPP_INCLUDE_BCI_FIU_COMMONTYPES_H */
