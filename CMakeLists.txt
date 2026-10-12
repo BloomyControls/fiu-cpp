@@ -108,8 +108,8 @@ if(FIU_INSTALL AND BUILD_SHARED_LIBS)
   include(CMakePackageConfigHelpers)
 
   set(targets_export_name "fiu-targets")
-  set(version_config "${PROJECT_BINARY_DIR}/fiu-config-version.cmake")
-  set(project_config "${PROJECT_BINARY_DIR}/fiu-config.cmake")
+  set(version_config "${PROJECT_BINARY_DIR}/fiu-cpp-config-version.cmake")
+  set(project_config "${PROJECT_BINARY_DIR}/fiu-cpp-config.cmake")
   set(fiu_cmake_dir "${CMAKE_INSTALL_LIBDIR}/cmake/fiu-cpp")
 
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/bci"
