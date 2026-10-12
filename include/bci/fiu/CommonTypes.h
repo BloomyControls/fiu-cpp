@@ -14,6 +14,7 @@
 
 #include <cstdint>
 
+#include "fiu_export.h"
 #include "util/expected.hpp"
 
 namespace bci::fiu {
@@ -70,6 +71,15 @@ struct FirmwareVersion {
  */
 template <class T>
 using Result = tl::expected<T, ErrorCode>;
+
+/**
+ * @brief Get a string describing an error code.
+ *
+ * @param[in] ec error code
+ *
+ * @return Error message. This function never returns a null pointer.
+ */
+FIU_API const char* ErrorMessage(ErrorCode ec) noexcept;
 
 }  // namespace bci::fiu
 
