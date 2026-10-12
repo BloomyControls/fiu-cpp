@@ -36,7 +36,7 @@ jobs:
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build docs
-        run: cmake --build build --target bs120xenet-docs
+        run: cmake --build build --target fiu-docs
 
       - name: Setup pages
         uses: actions/configure-pages@v6

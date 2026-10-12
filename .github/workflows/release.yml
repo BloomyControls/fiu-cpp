@@ -119,7 +119,7 @@ jobs:
       run: |
         pushd dist
         shasum -a 256 * > checksums.txt
-        mv checksums.txt bs120xenet_${TAG_NAME#v}_checksums.txt
+        mv checksums.txt fiu-cpp_${TAG_NAME#v}_checksums.txt
         popd
 
         release_args=(
