@@ -19,11 +19,126 @@ RS-485.
 
 ## Example Usage (C++)
 
-TODO
+This example connects to an FIU, queries the firmware version, and then sets
+a single channel's state, followed by all channels at once.
+
+```cpp
+#include <bci/fiu/FiuClient.h>
+
+#include <format>
+#include <iostream>
+
+int main(void) {
+  using ec = bci::fiu::ErrorCode;
+
+  bci::fiu::FiuClient client;
+
+  auto ret = client.Open("COM4");
+  if (ret != ec::kSuccess) {
+    std::cerr << "Failed to open serial port: " << bci::fiu::ErrorMessage(ret)
+        << '\n';
+    return 1;
+  }
+
+  ret = client.SetBoxID(0x02);
+  if (ret != ec::kSuccess) {
+    std::cerr << "Failed to set box ID: " << bci::fiu::ErrorMessage(ret)
+        << '\n';
+    return 1;
+  }
+
+  auto resp = client.GetFirmwareVersion();
+  if (resp) {
+    auto [major, minor] = *resp;
+    std::cout << std::format("Firmware version: {:d}.{:d}\n", major, minor);
+  } else {
+    std::cerr << "Failed to get firmware version: "
+        << bci::fiu::ErrorMessage(resp.error()) << '\n';
+    return 1;
+  }
+
+  ret = client.SetChannelState(0, bci::fiu::ChannelState::kVoltageMeasurement);
+  if (ret != ec::kSuccess) {
+    std::cerr << "Failed to set channel states: "
+        << bci::fiu::ErrorMessage(ret) << '\n';
+    return 1;
+  }
+
+  ret = client.SetAllChannelStates(bci::fiu::ChannelState::kDisconnected);
+  if (ret != ec::kSuccess) {
+    std::cerr << "Failed to set all channel states: "
+        << bci::fiu::ErrorMessage(ret) << '\n';
+    return 1;
+  }
+}
+```
 
 ## Example Usage (C)
 
-TODO
+This example performs the same operations as the C++ example above using the
+C interface.
+
+```c
+#include <bci/fiu/CInterface.h>
+
+#include <stdio.h>
+
+static void FormatErr(const char* msg, int ec) {
+  fprintf(stderr, "%s: %s (%d)\n", msg, FiuClient_ErrorMessage(ec), ec);
+}
+
+int main(void) {
+  int ret = 1;
+  int ec;
+  FiuClientHandle handle = NULL;
+  FiuFirmwareVersion fw_version;
+
+  ec = FiuClient_Init(&handle);
+  if (ec < 0) {
+    FormatErr("failed to initialize client", ec);
+    goto cleanup;
+  }
+
+  ec = FiuClient_SetBoxID(handle, 0x02);
+  if (ec < 0) {
+    FormatErr("failed to set box ID", ec);
+    goto cleanup;
+  }
+
+  ec = FiuClient_Open(handle, "COM4");
+  if (ec < 0) {
+    FormatErr("failed to open port", ec);
+    goto cleanup;
+  }
+
+  ec = FiuClient_GetFirmwareVersion(handle, &fw_version);
+  if (ec < 0) {
+    FormatErr("failed to get firmware version", ec);
+    goto cleanup;
+  }
+
+  printf("Firmware version: %u.%u\n", fw_version.major, fw_version.minor);
+
+  ec = FiuClient_SetChannelState(handle, 0, FIU_CHAN_STATE_VMEAS);
+  if (ec < 0) {
+    FormatErr("failed to set channel state", ec);
+    goto cleanup;
+  }
+
+  ec = FiuClient_SetAllChannelStates(handle, FIU_CHAN_STATE_DISCONNECTED);
+  if (ec < 0) {
+    FormatErr("failed to set all channel states", ec);
+    goto cleanup;
+  }
+
+  ret = 0;
+
+cleanup:
+  FiuClient_Destroy(&handle);
+
+  return ret;
+}
+```
 
 ## Building
 
