@@ -99,7 +99,7 @@ Result<std::string> SerialPort::ReadLine(unsigned int timeout_ms) {
   boost::system::error_code ec;
 
   const auto read_handler = [&](auto&& e, auto&&) { ec = e; };
-  boost::asio::async_read_until(port_, input_buffer_, '\n', read_handler);
+  boost::asio::async_read_until(port_, input_buffer_, '\r', read_handler);
 
   if (!Run(timeout_ms)) {
     return Err(ErrorCode::kReadTimedOut);
