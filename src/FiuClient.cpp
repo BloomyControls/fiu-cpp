@@ -90,7 +90,7 @@ ErrorCode FiuClient::SetChannelState(unsigned int channel,
   }
 
   Message msg(box_id_, cmd);
-  msg.Append("{:02}", channel);
+  msg.Append("{:02}", channel == 99 ? channel : channel + 1);
   return SendAndCheck(msg.Finalize());
 }
 
