@@ -30,7 +30,7 @@ jobs:
         arch: [x86, x64]
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Enable Developer Command Prompt
       uses: ilammy/msvc-dev-cmd@138b1c783b65ec697d8342918306b7b2db4e88f1
@@ -69,12 +69,12 @@ jobs:
           build/*.zip
 
   linux:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
 
     if: contains(inputs.platforms, 'linux')
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Configure CMake
       run: |
@@ -98,12 +98,12 @@ jobs:
           build/*.zip
 
   release:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [windows, linux]
     if: inputs.release
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Merge built artifacts
       uses: actions/download-artifact@v8
