@@ -45,7 +45,7 @@ void FiuClient::Close() noexcept {
 }
 
 ErrorCode FiuClient::SetBoxID(std::uint8_t box_id) noexcept {
-  if (box_id > 7) {
+  if (box_id > 0xf) {
     return ec::kBoxIDOutOfRange;
   }
 
