@@ -31,7 +31,7 @@ enum class Command : char {
 class Message {
  public:
   explicit Message(std::uint8_t box_id, Command cmd) {
-    Append("{}{:X}", static_cast<char>(cmd), box_id & 0x0F);
+    Append("{}{:c}", static_cast<char>(cmd), '0' + (box_id & 0x0F));
   }
 
   // NOTE: this does NOT do any bounds checking! It is up to the caller to
