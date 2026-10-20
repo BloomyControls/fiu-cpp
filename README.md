@@ -158,7 +158,7 @@ In your CMakeLists.txt, fetch and link with the driver:
 ```cmake
 FetchContent_Declare(fiu-cpp
   GIT_REPOSITORY https://github.com/BloomyControls/fiu-cpp.git
-  GIT_TAG v1.0.0
+  GIT_TAG v1.1.0
   GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(fiu-cpp)
@@ -170,7 +170,7 @@ If you have already installed the driver to a standard location on your system,
 you can use `find_package` instead:
 
 ```cmake
-find_package(fiu-cpp 1.0.0 REQUIRED)
+find_package(fiu-cpp 1.1.0 REQUIRED)
 
 target_link_libraries(my_program PRIVATE bci::fiu)
 ```
