@@ -20,7 +20,7 @@ enum class Command : char {
   kConnect = 'C',
   kDisconnect = 'D',
   kSetVoltageMode = 'V',
-  kSetCurrentMode = 'C',
+  kSetCurrentMode = 'I',
   kSetGroundFault = 'F',
   kGetSWVersion = 'H',
   kGetRelayStates = 'S',
