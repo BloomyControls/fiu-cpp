@@ -220,8 +220,23 @@ int FiuClient_SetSoftwareInterlock(FiuClientHandle handle, bool en) {
 }
 
 int FiuClient_GetInterlockState(FiuClientHandle handle,
-                                        bool* interlock_out) {
-  return WrapGet(&fc::GetInterlockState, handle, interlock_out);
+                                uint8_t* interlock_out) try {
+  if (!handle || !interlock_out) {
+    return Eint(ec::kInvalidArgument);
+  }
+
+  auto res = GetClient(handle).GetInterlockState();
+  if (!res) {
+    return Eint(res);
+  }
+
+  *interlock_out = static_cast<uint8_t>(res.value());
+
+  return kSuccess;
+} catch (const std::bad_alloc&) {
+  return Eint(ec::kAllocationFailed);
+} catch (...) {
+  return Eint(ec::kUnexpectedException);
 }
 
 // check for programmer errors in enum values
@@ -230,3 +245,8 @@ static_assert(FIU_CHAN_STATE_CONNECTED == (int)ChannelState::kConnected);
 static_assert(FIU_CHAN_STATE_VMEAS == (int)ChannelState::kVoltageMeasurement);
 static_assert(FIU_CHAN_STATE_IMEAS == (int)ChannelState::kCurrentMeasurement);
 static_assert(FIU_CHAN_STATE_FAULT == (int)ChannelState::kGroundFault);
+
+static_assert(FIU_INTERLOCK_TYPE_NONE == (int)InterlockType::kNone);
+static_assert(FIU_INTERLOCK_TYPE_HARDWARE == (int)InterlockType::kHardware);
+static_assert(FIU_INTERLOCK_TYPE_SOFTWARE == (int)InterlockType::kSoftware);
+static_assert(FIU_INTERLOCK_TYPE_BOTH == (int)InterlockType::kBoth);

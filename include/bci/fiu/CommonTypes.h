@@ -32,6 +32,21 @@ enum class ChannelState : std::uint8_t {
   kGroundFault = 4,         ///< Ground fault mode
 };
 
+/**
+ * @brief FIU interlock types.
+ *
+ * @note Legacy FIU only supports hardware interlocks. Software interlocks are
+ * only supported by FIU1KV.
+ */
+enum class InterlockType : std::uint8_t {
+  // Values must match the C macros! (They just match the FIU1KV's responses for
+  // consistency).
+  kNone = 0,                      ///< No interlock
+  kHardware = 1,                  ///< Hardware interlock
+  kSoftware = 2,                  ///< Software interlock
+  kBoth = kHardware | kSoftware,  ///< Both hardware and software interlocks
+};
+
 /// Error codes returned by the driver.
 enum class ErrorCode : int {
   // Values must match the C macros!

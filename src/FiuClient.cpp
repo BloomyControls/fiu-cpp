@@ -177,7 +177,7 @@ ErrorCode FiuClient::SetSoftwareInterlock(bool en) const {
   return SendAndCheck(msg.Finalize());
 }
 
-Result<bool> FiuClient::GetInterlockState() const {
+Result<InterlockType> FiuClient::GetInterlockState() const {
   Message msg(box_id_, Command::kGetInterlockState);
 
   auto resp = SendAndRecv(msg.Finalize());
@@ -191,9 +191,13 @@ Result<bool> FiuClient::GetInterlockState() const {
 
   switch (resp->front()) {
     case '0':
-      return false;
+      return InterlockType::kNone;
     case '1':
-      return true;
+      return InterlockType::kHardware;
+    case '2':
+      return InterlockType::kSoftware;
+    case '3':
+      return InterlockType::kBoth;
     default:
       return Err(ec::kInvalidResponse);
   }

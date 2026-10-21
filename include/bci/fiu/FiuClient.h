@@ -146,9 +146,9 @@ class FiuClient {
   /**
    * @brief Get the interlock state.
    *
-   * @return Result containing the interlock state or an error code.
+   * @return Result containing the interlock type or an error code.
    */
-  FIU_API Result<bool> GetInterlockState() const;
+  FIU_API Result<InterlockType> GetInterlockState() const;
 
  private:
   /// FIU box ID.
