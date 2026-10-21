@@ -96,6 +96,24 @@ extern "C" {
 #define FIU_CHAN_STATE_FAULT (4)
 /** @} */
 
+/**
+ * @defgroup CInterlockTypes Interlock Types
+ * FIU interlock types.
+ *
+ * @note Legacy FIU only supports hardware interlocks. Software interlocks are
+ * only supported by FIU1KV.
+ * @{
+ */
+/// No interlock
+#define FIU_INTERLOCK_TYPE_NONE (0)
+/// Hardware interlock
+#define FIU_INTERLOCK_TYPE_HARDWARE (1)
+/// Software interlock
+#define FIU_INTERLOCK_TYPE_SOFTWARE (2)
+/// Both hardware and software interlocks
+#define FIU_INTERLOCK_TYPE_BOTH (3)
+/** @} */
+
 /// FIU firmware version.
 typedef struct FiuFirmwareVersion {
   uint8_t major;  ///< Minor version
@@ -257,12 +275,13 @@ FIU_API int FiuClient_SetSoftwareInterlock(FiuClientHandle handle, bool en);
  * @brief Get the system interlock state.
  *
  * @param[in] handle FIU client
- * @param[out] interlock_out address of a bool to store the interlock state
+ * @param[out] interlock_out address of an integer to store the interlock type
+ * (see @ref CInterlockTypes)
  *
  * @return 0 on success or a negative error code.
  */
 FIU_API int FiuClient_GetInterlockState(FiuClientHandle handle,
-                                        bool* interlock_out);
+                                        uint8_t* interlock_out);
 
 #ifdef __cplusplus
 }  /* extern "C" */
