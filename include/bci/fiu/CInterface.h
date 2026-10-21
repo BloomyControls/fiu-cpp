@@ -175,7 +175,7 @@ FIU_API int FiuClient_Close(FiuClientHandle handle);
  * This can be changed on the fly to target multiple devices on the same bus.
  *
  * @param[in] handle FIU client
- * @param[in] box_id new target box ID, 0-6
+ * @param[in] box_id new target box ID, 0-15
  *
  * @return 0 on success or a negative error code.
  */
